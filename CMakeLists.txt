@@ -24,7 +24,7 @@ function(main)
     # append custom cmake paths to module search
     # -------------------------------------
     list(APPEND CMAKE_MODULE_PATH
-        "${CMAKE_CURRENT_LIST_DIR}/cmake"
+        "${CMAKE_CURRENT_LIST_DIR}/dependency/cmake_modules"
     )
 
     # call function which handles the project related initialization
