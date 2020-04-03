@@ -96,9 +96,6 @@ function(initialize_project)
         ${undefined_behavior_flags}
     )
 
-    # define custom definition flags
-    list(APPEND definition_flags "")
-
     # target: sample
     # -------------------------------------
     # create executable target
@@ -125,8 +122,6 @@ function(initialize_project)
             "${sanitizer_flags}"
         LINKER_FLAGS
             "${linker_flags}"
-        DEFINITION_FLAGS
-            "${definition_flags}"
         PRIVATE_INCLUDE_DIRS
             ${CMAKE_CURRENT_SOURCE_DIR}/include
             ${CMAKE_CURRENT_BINARY_DIR}
