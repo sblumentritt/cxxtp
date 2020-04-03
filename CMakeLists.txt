@@ -122,8 +122,9 @@ function(initialize_project)
             "${sanitizer_flags}"
         LINKER_FLAGS
             "${linker_flags}"
-        PRIVATE_INCLUDE_DIRS
+        PUBLIC_INCLUDE_DIRS
             ${CMAKE_CURRENT_SOURCE_DIR}/include
+        PRIVATE_INCLUDE_DIRS
             ${CMAKE_CURRENT_BINARY_DIR}
         BUILD_TYPE_AS_OUTPUT_DIR
     )
