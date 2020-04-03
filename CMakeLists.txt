@@ -6,7 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # define top-level project
 project("cxxtp"
     VERSION
-        0.0.1
+        0.1.0
     DESCRIPTION
         "Template for C++ projects with CMake as build system"
     LANGUAGES
