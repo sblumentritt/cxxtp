@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.17.0 FATAL_ERROR)
 
 # generate a compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
