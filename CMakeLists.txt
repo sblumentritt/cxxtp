@@ -53,9 +53,9 @@ function(initialize_project)
             BOOL "Create and install the HTML based documentation"
     )
 
-    set(${PROJECT_NAME}_enable_tests OFF
+    set(${PROJECT_NAME}_enable_integration_tests OFF
         CACHE
-            BOOL "Enable/Add tests which can be run with 'ctest' or via 'test' target"
+            BOOL "Enable/Add integration tests"
     )
 
     include(utility/build_type_handler)
@@ -160,7 +160,7 @@ function(initialize_project)
     )
 
     # check if cache variable is true
-    if(${PROJECT_NAME}_enable_tests)
+    if(${PROJECT_NAME}_enable_integration_tests)
         add_subdirectory(test)
     endif()
 
