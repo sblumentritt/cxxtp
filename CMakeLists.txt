@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 3.17.0 FATAL_ERROR)
 
-# generate a compile_commands.json
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 # define top-level project
 project("cxxtp"
     VERSION
@@ -12,6 +9,9 @@ project("cxxtp"
     LANGUAGES
         CXX C
 )
+
+# generate a compile_commands.json
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 function(main)
     # unset module path to not get polluted from including projects
