@@ -16,6 +16,7 @@ This repository is a template for C++ projects with CMake as build system.
 #### Requirements
 
 - [CMake][] >= 3.17.0
+- Compiler with C++17 support ([Clang][] >= 5.0 or [GCC][] >= 7.0)
 
 **Optional**:
 
@@ -29,7 +30,9 @@ This repository is a template for C++ projects with CMake as build system.
 The project is licensed under the MIT license. See [LICENSE](LICENSE) for more
 information.
 
+[GCC]: https://gcc.gnu.org/
 [CMake]: https://cmake.org/
+[Clang]: https://clang.llvm.org/
 [Doxygen]: http://www.stack.nl/~dimitri/doxygen/index.html
 [Cppcheck]: http://cppcheck.sourceforge.net/
 [clang-tidy]: http://clang.llvm.org/extra/clang-tidy/
