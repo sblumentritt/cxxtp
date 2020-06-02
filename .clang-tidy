@@ -1,5 +1,5 @@
 ---
-# file for 'clang-tidy version 9.0.0'
+# file for 'clang-tidy version 10.0.0'
 
 Checks: >
   -*,
@@ -13,6 +13,7 @@ Checks: >
   clang-analyzer-unix.API,
   clang-analyzer-unix.MismatchedDeallocator,
   cppcoreguidelines-avoid-goto,
+  cppcoreguidelines-init-variables,
   cppcoreguidelines-no-malloc,
   cppcoreguidelines-pro-type-const-cast,
   cppcoreguidelines-pro-type-cstyle-cast,
