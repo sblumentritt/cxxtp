@@ -38,9 +38,17 @@
 *.app
 
 # -------------------------------------
-# for cmake
+# for development
+# NOTE: this also affects subdirectories
 # -------------------------------------
 build/
+build_*/
+*_build/
+*_build_*/
+
+# -------------------------------------
+# for cmake
+# -------------------------------------
 Testing
 Makefile
 CMakeFiles
