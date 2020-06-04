@@ -1,19 +1,13 @@
-## cxxtp - C++ template project
-
-#### Table of Contents
-
-- [Description](#description)
-- [Requirements](#requirements)
-- [License](#license)
-
-#### Description
+# cxxtp - C++ template project
 
 This repository is a template for C++ projects with CMake as build system.
 
-> The project follows the CMake guidelines provided at
-> https://man.sr.ht/~sblumentritt/coding_guidelines/.
+[[_TOC_]]
 
-#### Requirements
+> The project follows the CMake guidelines provided at
+> https://gitlab.com/s.blumentritt/coding_guidelines.
+
+## Requirements
 
 - [CMake][] >= 3.17.0
 - Compiler with C++17 support ([Clang][] >= 5.0 or [GCC][] >= 7.0)
@@ -25,7 +19,7 @@ This repository is a template for C++ projects with CMake as build system.
 - [clang-tidy][] - clang-based C++ 'linter' tool
 - [clang-format][] - clang-based code formatting tool
 
-#### License
+## License
 
 The project is licensed under the MIT license. See [LICENSE](LICENSE) for more
 information.
