@@ -19,7 +19,7 @@ function(main)
 
     # global variables
     # -------------------------------------
-    set(${PROJECT_NAME}_target_sample "sample")
+    set(${PROJECT_NAME}_target "sample")
 
     # append custom cmake paths to module search
     # -------------------------------------
@@ -99,11 +99,11 @@ function(initialize_project)
     # target: sample
     # -------------------------------------
     # create executable target
-    add_executable(${${PROJECT_NAME}_target_sample})
+    add_executable(${${PROJECT_NAME}_target})
     add_executable(
-        ${${PROJECT_NAME}_target_sample}::${${PROJECT_NAME}_target_sample}
+        ${${PROJECT_NAME}_target}::${${PROJECT_NAME}_target}
         ALIAS
-        ${${PROJECT_NAME}_target_sample}
+        ${${PROJECT_NAME}_target}
     )
 
     # 'include' subdirectory which adds sources and related options to the target
@@ -113,7 +113,7 @@ function(initialize_project)
     include(utility/target_configuration)
     configure_target(
         TARGET
-            ${${PROJECT_NAME}_target_sample}
+            ${${PROJECT_NAME}_target}
         CXX_STANDARD
             17
         COMPILER_FLAGS
@@ -131,26 +131,26 @@ function(initialize_project)
 
     # add analyzer to target
     include(analyzer/clang_tidy)
-    register_for_clang_tidy(${${PROJECT_NAME}_target_sample})
+    register_for_clang_tidy(${${PROJECT_NAME}_target})
 
     include(analyzer/cppcheck)
     register_for_cppcheck(
         TARGET
-            ${${PROJECT_NAME}_target_sample}
+            ${${PROJECT_NAME}_target}
         CXX_STANDARD
             17
     )
 
     # strip binary for specific build types
     include(utility/postbuild_strip_command)
-    add_postbuild_strip(${${PROJECT_NAME}_target_sample})
+    add_postbuild_strip(${${PROJECT_NAME}_target})
 
     # define installation config for target and use GNU standard locations
     # NOTE: PREFIX=/usr/local/ by default
     include(GNUInstallDirs)
     install(
         TARGETS
-            ${${PROJECT_NAME}_target_sample}
+            ${${PROJECT_NAME}_target}
         RUNTIME
             DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY

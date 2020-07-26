@@ -1,4 +1,4 @@
-target_sources(${${PROJECT_NAME}_target_sample}
+target_sources(${${PROJECT_NAME}_target}
     PRIVATE
         main.cpp
 )
