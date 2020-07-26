@@ -53,11 +53,6 @@ function(initialize_project)
             BOOL "Create and install the HTML based documentation"
     )
 
-    set(${PROJECT_NAME}_enable_integration_tests OFF
-        CACHE
-            BOOL "Enable/Add integration tests"
-    )
-
     include(utility/build_type_handler)
     handle_default_build_type()
 
@@ -158,11 +153,6 @@ function(initialize_project)
         ARCHIVE
             DESTINATION ${CMAKE_INSTALL_LIBDIR}
     )
-
-    # check if cache variable is true
-    if(${PROJECT_NAME}_enable_integration_tests)
-        add_subdirectory(test)
-    endif()
 
     # check if cache variable is true
     if(${PROJECT_NAME}_enable_documentation)
