@@ -7,14 +7,14 @@
 #     - type (executable or library)
 #     - C++ version
 #     - different git username/email
-# - [ ] remove .git folder
-# - [ ] remove .gitmodules file
-# - [ ] remove all folder in dependency/
-# - [ ] git init
-# - [ ] create empty initial commit
-# - [ ] create commit with gitignore
-# - [ ] add 'cmake_modules' submodule to dependency at specific version
-# - [ ] commit submodule addition
+# - [x] remove .git folder
+# - [x] remove .gitmodules file
+# - [x] remove all folder in dependency/
+# - [x] git init
+# - [x] create empty initial commit
+# - [x] create commit with gitignore
+# - [x] add 'cmake_modules' submodule to dependency at specific version
+# - [x] commit submodule addition
 # - [ ] replace project name in CMake
 # - [ ] replace target name in CMake
 # - [ ] depending of the given type uncomment a specific section and remove the other
@@ -24,6 +24,9 @@
 
 # absolute directory path to this script
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+
+# dependency commits/tags
+cmake_modules_tag="v0.1.0"
 
 # define all variables which will be populated from the command line
 project_name=
@@ -175,3 +178,49 @@ check_required_string_option "$target_name" "--target"
 
 check_required_integer_option "$target_type" "[--bin|--lib]"
 check_required_integer_option "$cxx_standard" "--standard"
+
+printf "\nIs '%s' the correct template dir which should be configured? [y/n] " "${script_dir}"
+read -r answer
+
+if [ ! "${answer}" = "y" ]; then
+    printf "Aborting '%s'!\n" "$(basename "$0")" 1>&2
+    exit 1
+fi
+
+cd "${script_dir}" || { printf "Unable to change to '%s'\n" "${script_dir}" >&2; exit 1; }
+
+# remove old Git related files/folder
+rm -rdf "${script_dir}/.git"
+rm -f "${script_dir}/.gitmodules"
+rm -rdf "${script_dir}/dependency/"*
+
+# initialize the Git repo and set local config if requested
+git init
+
+if [ -n "${git_username}" ]; then
+    git config user.name "${git_username}"
+fi
+
+if [ -n "${git_email}" ]; then
+    git config user.email "${git_email}"
+fi
+
+# create first commit as empty commit
+git commit --allow-empty -m "Initial empty commit"
+
+# add/commit .gitignore file
+git add "${script_dir}/.gitignore"
+git commit -m "Add .gitignore file"
+
+# add 'cmake_modules' as submodule
+git submodule add https://gitlab.com/s.blumentritt/cmake_modules.git "dependency/cmake_modules"
+
+cd "${script_dir}/dependency/cmake_modules" || \
+    { printf "Unable to change to '%s'\n" "${script_dir}/dependency/cmake_modules" >&2 ; exit 1; }
+
+git checkout "${cmake_modules_tag}"
+
+cd "${script_dir}" || { printf "Unable to change to '%s'\n" "${script_dir}" >&2; exit 1; }
+
+git add "${script_dir}/dependency/cmake_modules"
+git commit -m "Add 'cmake_modules' submodule"
