@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# - [ ] get absolute directory where the script is
+# - [x] get absolute directory where the script is
 # - [x] add command line parsing
 #     - project name
 #     - target name
@@ -21,6 +21,9 @@
 # - [ ] commit initial files
 # - [ ] remove placeholder folder?
 # - [ ] remove this script
+
+# absolute directory path to this script
+script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 
 # define all variables which will be populated from the command line
 project_name=
