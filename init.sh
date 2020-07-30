@@ -18,7 +18,7 @@
 # - [x] replace project name in CMake
 # - [x] replace target name in CMake
 # - [x] depending of the given type uncomment a specific section and remove the other
-# - [ ] commit initial files
+# - [x] commit initial files
 # - [ ] remove placeholder folder?
 # - [ ] remove this script
 
@@ -237,3 +237,13 @@ else
     sed -i -E "s/##SECTION_LIBRARY_TYPE##//g" "${script_dir}/CMakeLists.txt"
     sed -i -E "/##SECTION_EXECUTABLE_TYPE##/d" "${script_dir}/CMakeLists.txt"
 fi
+
+# commit all relevant files from the template
+git add "${script_dir}/.clang-format"
+git add "${script_dir}/.clang-tidy"
+git add "${script_dir}/CMakeLists.txt"
+git add "${script_dir}/doc/CMakeLists.txt"
+git add "${script_dir}/doc/Doxyfile.in"
+git add "${script_dir}/src/CMakeLists.txt"
+
+git commit -m "Add initial files which come from the 'cxxtp' project template"
