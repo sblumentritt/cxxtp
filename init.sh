@@ -1,27 +1,5 @@
 #!/bin/sh
 
-# - [x] get absolute directory where the script is
-# - [x] add command line parsing
-#     - project name
-#     - target name
-#     - type (executable or library)
-#     - C++ version
-#     - different git username/email
-# - [x] remove .git folder
-# - [x] remove .gitmodules file
-# - [x] remove all folder in dependency/
-# - [x] git init
-# - [x] create empty initial commit
-# - [x] create commit with gitignore
-# - [x] add 'cmake_modules' submodule to dependency at specific version
-# - [x] commit submodule addition
-# - [x] replace project name in CMake
-# - [x] replace target name in CMake
-# - [x] depending of the given type uncomment a specific section and remove the other
-# - [x] commit initial files
-# - [ ] remove placeholder folder?
-# - [x] remove this script
-
 # absolute directory path to this script
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 
