@@ -15,9 +15,9 @@
 # - [x] create commit with gitignore
 # - [x] add 'cmake_modules' submodule to dependency at specific version
 # - [x] commit submodule addition
-# - [ ] replace project name in CMake
-# - [ ] replace target name in CMake
-# - [ ] depending of the given type uncomment a specific section and remove the other
+# - [x] replace project name in CMake
+# - [x] replace target name in CMake
+# - [x] depending of the given type uncomment a specific section and remove the other
 # - [ ] commit initial files
 # - [ ] remove placeholder folder?
 # - [ ] remove this script
@@ -224,3 +224,16 @@ cd "${script_dir}" || { printf "Unable to change to '%s'\n" "${script_dir}" >&2;
 
 git add "${script_dir}/dependency/cmake_modules"
 git commit -m "Add 'cmake_modules' submodule"
+
+# replace text placeholder in top-level CMakeLists.txt
+sed -i -E "s/##TEMPLATE_PROJECT_NAME##/${project_name}/g" "${script_dir}/CMakeLists.txt"
+sed -i -E "s/##TEMPLATE_TARGET_NAME##/${target_name}/g" "${script_dir}/CMakeLists.txt"
+sed -i -E "s/##TEMPLATE_CXX_STANDARD##/${cxx_standard}/g" "${script_dir}/CMakeLists.txt"
+
+if [ "${target_type}" -eq 1 ]; then
+    sed -i -E "s/##SECTION_EXECUTABLE_TYPE##//g" "${script_dir}/CMakeLists.txt"
+    sed -i -E "/##SECTION_LIBRARY_TYPE##/d" "${script_dir}/CMakeLists.txt"
+else
+    sed -i -E "s/##SECTION_LIBRARY_TYPE##//g" "${script_dir}/CMakeLists.txt"
+    sed -i -E "/##SECTION_EXECUTABLE_TYPE##/d" "${script_dir}/CMakeLists.txt"
+fi
