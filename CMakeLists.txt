@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.17.0 FATAL_ERROR)
 
 # define top-level project
-project("cxxtp"
+project("##TEMPLATE_PROJECT_NAME##"
     VERSION
         0.1.0
     DESCRIPTION
@@ -19,7 +19,7 @@ function(main)
 
     # global variables
     # -------------------------------------
-    set(${PROJECT_NAME}_target "sample")
+    set(${PROJECT_NAME}_target "##TEMPLATE_TARGET_NAME##")
 
     # append custom cmake paths to module search
     # -------------------------------------
@@ -91,15 +91,22 @@ function(initialize_project)
         ${undefined_behavior_flags}
     )
 
-    # target: sample
+    # target: ##TEMPLATE_TARGET_NAME##
     # -------------------------------------
-    # create executable target
-    add_executable(${${PROJECT_NAME}_target})
-    add_executable(
-        ${${PROJECT_NAME}_target}::${${PROJECT_NAME}_target}
-        ALIAS
-        ${${PROJECT_NAME}_target}
-    )
+    ##SECTION_EXECUTABLE_TYPE### create executable target
+    ##SECTION_EXECUTABLE_TYPE##add_executable(${${PROJECT_NAME}_target})
+    ##SECTION_EXECUTABLE_TYPE##add_executable(
+    ##SECTION_EXECUTABLE_TYPE##    ${${PROJECT_NAME}_target}::${${PROJECT_NAME}_target}
+    ##SECTION_EXECUTABLE_TYPE##    ALIAS
+    ##SECTION_EXECUTABLE_TYPE##    ${${PROJECT_NAME}_target}
+    ##SECTION_EXECUTABLE_TYPE##)
+    ##SECTION_LIBRARY_TYPE### create library target
+    ##SECTION_LIBRARY_TYPE##add_library(${${PROJECT_NAME}_target})
+    ##SECTION_LIBRARY_TYPE##add_library(
+    ##SECTION_LIBRARY_TYPE##    ${${PROJECT_NAME}_target}::${${PROJECT_NAME}_target}
+    ##SECTION_LIBRARY_TYPE##    ALIAS
+    ##SECTION_LIBRARY_TYPE##    ${${PROJECT_NAME}_target}
+    ##SECTION_LIBRARY_TYPE##)
 
     # 'include' subdirectory which adds sources and related options to the target
     add_subdirectory(src)
@@ -110,7 +117,7 @@ function(initialize_project)
         TARGET
             ${${PROJECT_NAME}_target}
         CXX_STANDARD
-            17
+            ##TEMPLATE_CXX_STANDARD##
         COMPILER_FLAGS
             "${cxx_compiler_flags}"
         SANITIZER_FLAGS
