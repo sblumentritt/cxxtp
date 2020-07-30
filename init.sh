@@ -13,6 +13,7 @@ target_type=0 # [0 = executable | 1 = library]
 cxx_standard=17
 git_username=
 git_email=
+full_dir_structure=0
 
 usage() {
     printf "Usage: %s [OPTIONS]
@@ -29,6 +30,8 @@ OPTIONS:
     -s, --standard <VERSION>
         C++ standard which should be used to build the target. [possible values: 11, 14, 17, 20]
         Default: 17
+    -f, --full-dir-structure
+        Create all common top-level directories according to the coding guidelines.
     --git-username <NAME>
         Name which should be used locally in the Git repository to create commits.
     --git-email <ADDRESS>
@@ -93,6 +96,9 @@ while :; do
                 eprint_empty_argument "-s, --standard"
                 usage
             fi
+            ;;
+        -f|--full-dir-structure)
+            full_dir_structure=1
             ;;
         --git-username)
             if [ -n "$2" ]; then
@@ -197,6 +203,16 @@ git add "${script_dir}/doc/Doxyfile.in"
 git add "${script_dir}/src/CMakeLists.txt"
 
 git commit -m "Add initial files which come from the 'cxxtp' project template"
+
+# create common top-level directories if requested
+if [ "${full_dir_structure}" -eq 1 ]; then
+    mkdir "${script_dir}/cmake"
+    mkdir "${script_dir}/include"
+    mkdir "${script_dir}/test"
+    mkdir "${script_dir}/example"
+    mkdir "${script_dir}/script"
+    mkdir "${script_dir}/packaging"
+fi
 
 # remove some irrelevant files from the template
 rm -f "${script_dir}/LICENSE"
