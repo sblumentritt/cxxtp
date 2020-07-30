@@ -31,8 +31,8 @@ cmake_modules_tag="v0.1.0"
 # define all variables which will be populated from the command line
 project_name=
 target_name=
-target_type=0 # [1 = executable | 2 = library]
-cxx_standard=0
+target_type=0 # [0 = executable | 1 = library]
+cxx_standard=17
 git_username=
 git_email=
 
@@ -42,16 +42,15 @@ usage() {
 OPTIONS:
     -h, --help
         Prints help information.
-    --project <NAME>
+    -p, --project <NAME>
         Name which should be used for the CMake project.
-    --target <NAME>
+    -t, --target <NAME>
         Name which should be used for the CMake target.
-    --bin
-        Use a binary (executable) CMake target.
-    --lib
-        Use a library CMake target.
-    --standard <VERSION>
+    -l, --lib
+        Create a library CMake target. Without this option an executable CMake target is created.
+    -s, --standard <VERSION>
         C++ standard which should be used to build the target. [possible values: 11, 14, 17, 20]
+        Default: 17
     --git-username <NAME>
         Name which should be used locally in the Git repository to create commits.
     --git-email <ADDRESS>
@@ -65,10 +64,6 @@ eprint_empty_argument() {
     printf "ERROR: '%s' requires a non-empty option argument.\n" "$1" >&2
 }
 
-eprint_multiple_target_types() {
-    printf "ERROR: Target type needs to be unique.\n" >&2
-}
-
 eprint_required_option() {
     printf "ERROR: '%s' command line option is required.\n" "$1" >&2
 }
@@ -80,51 +75,31 @@ check_required_string_option() {
     fi
 }
 
-check_required_integer_option() {
-    if [ "$1" -eq 0 ]; then
-        eprint_required_option "$2"
-        usage
-    fi
-}
-
 # parse command line arguments
 while :; do
     case $1 in
-        --project)
+        -p|--project)
             if [ -n "$2" ]; then
                 project_name=$2
                 shift
             else
-                eprint_empty_argument "--project"
+                eprint_empty_argument "-p, --project"
                 usage
             fi
             ;;
-        --target)
+        -t|--target)
             if [ -n "$2" ]; then
                 target_name=$2
                 shift
             else
-                eprint_empty_argument "--target"
+                eprint_empty_argument "-t, --target"
                 usage
             fi
             ;;
-        --bin)
-            if [ $target_type -eq 0 ]; then
-                target_type=1
-            else
-                eprint_multiple_target_types
-                usage
-            fi
+        -l|--lib)
+            target_type=1
             ;;
-        --lib)
-            if [ $target_type -eq 0 ]; then
-                target_type=2
-            else
-                eprint_multiple_target_types
-                usage
-            fi
-            ;;
-        --standard)
+        -s|--standard)
             if [ -n "$2" ]; then
                 if [ "$2" -eq 11 ] || [ "$2" -eq 14 ] || [ "$2" -eq 17 ] || [ "$2" -eq 20 ]; then
                     cxx_standard=$2
@@ -132,12 +107,12 @@ while :; do
                 else
                     printf "ERROR: Unsupported argument value '%d' for '%s'\n" \
                         "$2" \
-                        "--standard" \
+                        "-s, --standard" \
                         >&2
                     usage
                 fi
             else
-                eprint_empty_argument "--standard"
+                eprint_empty_argument "-s, --standard"
                 usage
             fi
             ;;
@@ -173,11 +148,8 @@ while :; do
     shift
 done
 
-check_required_string_option "$project_name" "--project"
-check_required_string_option "$target_name" "--target"
-
-check_required_integer_option "$target_type" "[--bin|--lib]"
-check_required_integer_option "$cxx_standard" "--standard"
+check_required_string_option "$project_name" "-p, --project"
+check_required_string_option "$target_name" "-t, --target"
 
 printf "\nIs '%s' the correct template dir which should be configured? [y/n] " "${script_dir}"
 read -r answer
@@ -230,7 +202,7 @@ sed -i -E "s/##TEMPLATE_PROJECT_NAME##/${project_name}/g" "${script_dir}/CMakeLi
 sed -i -E "s/##TEMPLATE_TARGET_NAME##/${target_name}/g" "${script_dir}/CMakeLists.txt"
 sed -i -E "s/##TEMPLATE_CXX_STANDARD##/${cxx_standard}/g" "${script_dir}/CMakeLists.txt"
 
-if [ "${target_type}" -eq 1 ]; then
+if [ "${target_type}" -eq 0 ]; then
     sed -i -E "s/##SECTION_EXECUTABLE_TYPE##//g" "${script_dir}/CMakeLists.txt"
     sed -i -E "/##SECTION_LIBRARY_TYPE##/d" "${script_dir}/CMakeLists.txt"
 else
