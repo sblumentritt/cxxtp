@@ -1,6 +1,6 @@
 target_sources(${${PROJECT_NAME}_target}
     PRIVATE
-        main.cpp
+        # add private source files here
 )
 
 target_include_directories(${${PROJECT_NAME}_target}

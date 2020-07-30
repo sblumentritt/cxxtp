@@ -10,7 +10,6 @@ This repository is a template for C++ projects with CMake as build system.
 ## Requirements
 
 - [CMake][] >= 3.17.0
-- Compiler with C++17 support ([Clang][] >= 5.0 or [GCC][] >= 7.0)
 
 **Optional**:
 

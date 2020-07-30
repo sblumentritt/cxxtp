@@ -5,9 +5,9 @@ project("##TEMPLATE_PROJECT_NAME##"
     VERSION
         0.1.0
     DESCRIPTION
-        "Template for C++ projects with CMake as build system"
+        "TODO: add a description for the project"
     LANGUAGES
-        CXX C
+        CXX
 )
 
 # generate a compile_commands.json
@@ -55,14 +55,6 @@ function(initialize_project)
 
     include(utility/build_type_handler)
     handle_default_build_type()
-
-    # includes cmake files for meta information generation
-    # -------------------------------------
-    include(info_provider/git_revision_description)
-    get_git_revision_description(current_git_revision)
-
-    include(info_provider/meta_information_generator)
-    generate_meta_information_header("${PROJECT_NAME}" "${current_git_revision}")
 
     # define compiler/linker flags
     # -------------------------------------

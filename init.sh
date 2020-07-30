@@ -198,5 +198,9 @@ git add "${script_dir}/src/CMakeLists.txt"
 
 git commit -m "Add initial files which come from the 'cxxtp' project template"
 
+# remove some irrelevant files from the template
+rm -f "${script_dir}/LICENSE"
+rm -f "${script_dir}/README.md"
+
 # self-delete this script
 rm -- "${script_dir}/$(basename "$0")"
