@@ -20,7 +20,7 @@
 # - [x] depending of the given type uncomment a specific section and remove the other
 # - [x] commit initial files
 # - [ ] remove placeholder folder?
-# - [ ] remove this script
+# - [x] remove this script
 
 # absolute directory path to this script
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
@@ -247,3 +247,6 @@ git add "${script_dir}/doc/Doxyfile.in"
 git add "${script_dir}/src/CMakeLists.txt"
 
 git commit -m "Add initial files which come from the 'cxxtp' project template"
+
+# self-delete this script
+rm -- "${script_dir}/$(basename "$0")"
