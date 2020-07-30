@@ -140,7 +140,7 @@ function(initialize_project)
         TARGET
             ${${PROJECT_NAME}_target}
         CXX_STANDARD
-            17
+            ##TEMPLATE_CXX_STANDARD##
     )
 
     # strip binary for specific build types
