@@ -147,8 +147,6 @@ cd "${script_dir}" || { printf "Unable to change to '%s'\n" "${script_dir}" >&2;
 
 # remove old Git related files/folder
 rm -rdf "${script_dir}/.git"
-rm -f "${script_dir}/.gitmodules"
-rm -rdf "${script_dir}/dependency/"*
 
 # initialize the Git repo and set local config if requested
 git init
@@ -169,6 +167,7 @@ git add "${script_dir}/.gitignore"
 git commit -m "Add .gitignore file"
 
 # add 'cmake_modules' as submodule
+mkdir "${script_dir}/dependency"
 git submodule add https://gitlab.com/s.blumentritt/cmake_modules.git "dependency/cmake_modules"
 
 cd "${script_dir}/dependency/cmake_modules" || \

@@ -1,3 +1,0 @@
-[submodule "dependency/cmake_modules"]
-	path = dependency/cmake_modules
-	url = https://gitlab.com/s.blumentritt/cmake_modules.git
