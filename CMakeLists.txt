@@ -53,6 +53,9 @@ function(initialize_project)
             BOOL "Create and install the HTML based documentation"
     )
 
+    include(utility/out_of_source_build)
+    enforce_out_of_source_build()
+
     include(utility/build_type_handler)
     handle_default_build_type()
 
@@ -71,16 +74,12 @@ function(initialize_project)
     check_available_linker(linker_flags)
 
     # get sanitizer flags
-    include(sanitizer/address)
-    get_address_sanitizer_flags(address_sanitizer_flags)
-
-    include(sanitizer/undefined_behavior)
-    get_undefined_behavior_sanitizer_flags(undefined_behavior_flags)
-
-    # create one variable to hold all wanted sanitizer flags
-    list(APPEND sanitizer_flags
-        ${address_sanitizer_flags}
-        ${undefined_behavior_flags}
+    include(utility/sanitizer_flags)
+    get_sanitizer_flags(
+        RESULT
+            sanitizer_flags
+        ADDRESS
+        UNDEFINED_BEHAVIOR
     )
 
     # target: ##TEMPLATE_TARGET_NAME##
@@ -128,12 +127,7 @@ function(initialize_project)
     register_for_clang_tidy(${${PROJECT_NAME}_target})
 
     include(analyzer/cppcheck)
-    register_for_cppcheck(
-        TARGET
-            ${${PROJECT_NAME}_target}
-        CXX_STANDARD
-            ##TEMPLATE_CXX_STANDARD##
-    )
+    register_for_cppcheck(${${PROJECT_NAME}_target})
 
     # strip binary for specific build types
     include(utility/postbuild_strip_command)

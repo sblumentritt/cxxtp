@@ -4,7 +4,7 @@
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 
 # dependency commits/tags
-cmake_modules_tag="v0.1.0"
+cmake_modules_tag="v0.2.0"
 
 # define all variables which will be populated from the command line
 project_name=
