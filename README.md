@@ -2,8 +2,6 @@
 
 This repository is a template for C++ projects with CMake as build system.
 
-[[_TOC_]]
-
 > The project follows the CMake guidelines provided at
 > https://gitlab.com/s.blumentritt/coding_guidelines.
 
