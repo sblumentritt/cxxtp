@@ -168,7 +168,7 @@ git commit -m "Add .gitignore file"
 
 # add 'cmake_modules' as submodule
 mkdir "${script_dir}/dependency"
-git submodule add https://gitlab.com/s.blumentritt/cmake_modules.git "dependency/cmake_modules"
+git submodule add https://github.com/sblumentritt/cmake_modules.git "dependency/cmake_modules"
 
 cd "${script_dir}/dependency/cmake_modules" || \
     { printf "Unable to change to '%s'\n" "${script_dir}/dependency/cmake_modules" >&2 ; exit 1; }
