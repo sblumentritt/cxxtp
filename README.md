@@ -3,7 +3,7 @@
 This repository is a template for C++ projects with CMake as build system.
 
 > The project follows the CMake guidelines provided at
-> https://gitlab.com/s.blumentritt/coding_guidelines.
+> https://github.com/sblumentritt/coding_guidelines.
 
 ## Requirements
 
