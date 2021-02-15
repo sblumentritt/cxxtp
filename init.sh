@@ -173,7 +173,7 @@ git submodule add https://github.com/sblumentritt/cmake_modules.git "dependency/
 cd "${script_dir}/dependency/cmake_modules" || \
     { printf "Unable to change to '%s'\n" "${script_dir}/dependency/cmake_modules" >&2 ; exit 1; }
 
-git checkout "${cmake_modules_tag}"
+# git checkout "${cmake_modules_tag}"
 
 cd "${script_dir}" || { printf "Unable to change to '%s'\n" "${script_dir}" >&2; exit 1; }
 
