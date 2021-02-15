@@ -56,6 +56,11 @@ check_required_string_option() {
     fi
 }
 
+# find all CMakeLists.txt and call sed with the given string
+find_and_sed() {
+    find "${script_dir}" -type f -name CMakeLists.txt -exec sed -i -E "$1" {} \;
+}
+
 # parse command line arguments
 while :; do
     case $1 in
@@ -180,26 +185,37 @@ cd "${script_dir}" || { printf "Unable to change to '%s'\n" "${script_dir}" >&2;
 git add "${script_dir}/dependency/cmake_modules"
 git commit -m "Add 'cmake_modules' submodule"
 
-# replace text placeholder in top-level CMakeLists.txt
-sed -i -E "s/##TEMPLATE_PROJECT_NAME##/${project_name}/g" "${script_dir}/CMakeLists.txt"
-sed -i -E "s/##TEMPLATE_TARGET_NAME##/${target_name}/g" "${script_dir}/CMakeLists.txt"
-sed -i -E "s/##TEMPLATE_CXX_STANDARD##/${cxx_standard}/g" "${script_dir}/CMakeLists.txt"
-
+# replace text placeholder
 if [ "${target_type}" -eq 0 ]; then
-    sed -i -E "s/##SECTION_EXECUTABLE_TYPE##//g" "${script_dir}/CMakeLists.txt"
-    sed -i -E "/##SECTION_LIBRARY_TYPE##/d" "${script_dir}/CMakeLists.txt"
+    target_specific_dir="${script_dir}/src/${target_name}"
+
+    mkdir -p "${target_specific_dir}"
+    mv src/CMakeLists.template "${target_specific_dir}/CMakeLists.txt"
+    sed -i -E "s/##TARGET_NAME##/${target_name}/g" "${target_specific_dir}/CMakeLists.txt"
+
+    find_and_sed "s/##SECTION_EXECUTABLE_TYPE##//g"
+    find_and_sed "/##SECTION_LIBRARY_TYPE##/d"
 else
-    sed -i -E "s/##SECTION_LIBRARY_TYPE##//g" "${script_dir}/CMakeLists.txt"
-    sed -i -E "/##SECTION_EXECUTABLE_TYPE##/d" "${script_dir}/CMakeLists.txt"
+    target_specific_dir="${script_dir}/src/lib${target_name}"
+
+    mkdir -p "${target_specific_dir}"
+    mv src/CMakeLists.template "${target_specific_dir}/CMakeLists.txt"
+    sed -i -E "s/##TARGET_NAME##/lib${target_name}/g" "${target_specific_dir}/CMakeLists.txt"
+
+    find_and_sed "s/##SECTION_LIBRARY_TYPE##//g"
+    find_and_sed "/##SECTION_EXECUTABLE_TYPE##/d"
 fi
+
+find_and_sed "s/##TEMPLATE_PROJECT_NAME##/${project_name}/g"
+find_and_sed "s/##TEMPLATE_TARGET_NAME##/${target_name}/g"
+find_and_sed "s/##TEMPLATE_CXX_STANDARD##/${cxx_standard}/g"
 
 # commit all relevant files from the template
 git add "${script_dir}/.clang-format"
 git add "${script_dir}/.clang-tidy"
 git add "${script_dir}/CMakeLists.txt"
-git add "${script_dir}/doc/CMakeLists.txt"
-git add "${script_dir}/doc/Doxyfile.in"
-git add "${script_dir}/src/CMakeLists.txt"
+git add "${script_dir}/doc/"
+git add "${script_dir}/src/"
 
 git commit -m "Add initial files which come from the 'cxxtp' project template"
 

@@ -1,0 +1,77 @@
+# define/configure the target
+# -------------------------------------
+##SECTION_EXECUTABLE_TYPE##add_executable(${${PROJECT_NAME}_target_##TARGET_NAME##})
+##SECTION_EXECUTABLE_TYPE##add_executable(
+##SECTION_EXECUTABLE_TYPE##    ${${PROJECT_NAME}_target_##TARGET_NAME##}::${${PROJECT_NAME}_target_##TARGET_NAME##}
+##SECTION_EXECUTABLE_TYPE##    ALIAS
+##SECTION_EXECUTABLE_TYPE##    ${${PROJECT_NAME}_target_##TARGET_NAME##}
+##SECTION_EXECUTABLE_TYPE##)
+##SECTION_LIBRARY_TYPE##add_library(${${PROJECT_NAME}_target_##TARGET_NAME##})
+##SECTION_LIBRARY_TYPE##add_library(
+##SECTION_LIBRARY_TYPE##    ${${PROJECT_NAME}_target_##TARGET_NAME##}::${${PROJECT_NAME}_target_##TARGET_NAME##}
+##SECTION_LIBRARY_TYPE##    ALIAS
+##SECTION_LIBRARY_TYPE##    ${${PROJECT_NAME}_target_##TARGET_NAME##}
+##SECTION_LIBRARY_TYPE##)
+
+# use helper function to configure a target
+include(utility/target_configuration)
+configure_target(
+    TARGET
+        ${${PROJECT_NAME}_target_##TARGET_NAME##}
+    CXX_STANDARD
+        ##TEMPLATE_CXX_STANDARD##
+    COMPILER_FLAGS
+        "${${PROJECT_NAME}_cxx_compiler_flags}"
+    SANITIZER_FLAGS
+        "${${PROJECT_NAME}_sanitizer_flags}"
+    LINKER_FLAGS
+        "${${PROJECT_NAME}_linker_flags}"
+    ##SECTION_LIBRARY_TYPE##PUBLIC_INCLUDE_DIRS
+    ##SECTION_LIBRARY_TYPE##    ${PROJECT_SOURCE_DIR}/include
+    ##SECTION_EXECUTABLE_TYPE##PRIVATE_INCLUDE_DIRS
+    ##SECTION_EXECUTABLE_TYPE##    ${CMAKE_CURRENT_LIST_DIR}
+    ##SECTION_EXECUTABLE_TYPE##    ${PROJECT_BINARY_DIR}
+    BUILD_TYPE_AS_OUTPUT_DIR
+    ENABLE_UNUSED_SECTION_GARBAGE_COLLECTION
+)
+
+# add analyzer to target
+include(analyzer/clang_tidy)
+register_for_clang_tidy(${${PROJECT_NAME}_target_##TARGET_NAME##})
+
+include(analyzer/cppcheck)
+register_for_cppcheck(${${PROJECT_NAME}_target_##TARGET_NAME##})
+
+# strip binary for specific build types
+include(utility/postbuild_strip_command)
+add_postbuild_strip(${${PROJECT_NAME}_target_##TARGET_NAME##})
+
+# add source files and include sub-folder
+# -------------------------------------
+# target_sources(${${PROJECT_NAME}_target_##TARGET_NAME##}
+#     PRIVATE
+#         # source file
+# )
+
+# link against dependencies
+# -------------------------------------
+# target_link_libraries(${${PROJECT_NAME}_target_##TARGET_NAME##}
+#     PRIVATE
+#         # library
+# )
+
+# define installation configuration
+# -------------------------------------
+# use GNU standard locations
+# NOTE: PREFIX=/usr/local/ by default
+include(GNUInstallDirs)
+install(
+    TARGETS
+        ${${PROJECT_NAME}_target_##TARGET_NAME##}
+    RUNTIME
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

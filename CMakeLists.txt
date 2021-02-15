@@ -13,148 +13,70 @@ project("##TEMPLATE_PROJECT_NAME##"
 # generate a compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-function(main)
-    # unset module path to not get polluted from including projects
-    unset(CMAKE_MODULE_PATH)
+# unset module path to not get polluted from including projects
+unset(CMAKE_MODULE_PATH)
 
-    # global variables
-    # -------------------------------------
-    set(${PROJECT_NAME}_target "##TEMPLATE_TARGET_NAME##")
+# global variables
+# -------------------------------------
+##SECTION_EXECUTABLE_TYPE##set(${PROJECT_NAME}_target_##TEMPLATE_TARGET_NAME## "##TEMPLATE_TARGET_NAME##")
+##SECTION_LIBRARY_TYPE##set(${PROJECT_NAME}_target_lib##TEMPLATE_TARGET_NAME## "lib##TEMPLATE_TARGET_NAME##")
+# generic documentation target
+set(${PROJECT_NAME}_target_documentation "documentation")
 
-    # append custom cmake paths to module search
-    # -------------------------------------
-    list(APPEND CMAKE_MODULE_PATH
-        "${CMAKE_CURRENT_LIST_DIR}/dependency/cmake_modules"
-    )
+# append custom cmake paths to module search
+# -------------------------------------
+list(APPEND CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_LIST_DIR}/dependency/cmake_modules"
+)
 
-    # call function which handles the project related initialization
-    # e.g. creation of targets
-    initialize_project()
+# stop if system is not unix/linux
+# -------------------------------------
+if(NOT UNIX)
+    message(FATAL_ERROR "Only UNIX systems are supported!")
+endif()
 
-    # unset module path to not pollute third party projects
-    unset(CMAKE_MODULE_PATH)
+include(utility/build_type_handler)
+setup_build_type_variables()
 
-    # call function which handles dependencies
-    # e.g. with 'add_subdirectory'
-    configure_dependencies()
-endfunction()
+include(generic_target/format)
+define_format_targets()
 
-function(initialize_project)
-    # stop if system is not unix/linux
-    # -------------------------------------
-    if(NOT UNIX)
-        message(FATAL_ERROR "Only UNIX systems are supported!")
-    endif()
+# includes cmake files for meta information generation
+# -------------------------------------
+include(git/revision_description)
+get_git_revision_description(${PROJECT_NAME}_current_git_revision)
 
-    # define cache variables
-    # -------------------------------------
-    set(${PROJECT_NAME}_enable_documentation OFF
-        CACHE
-            BOOL "Create and install the HTML based documentation"
-    )
+include(info_provider/meta_information_generator)
+generate_meta_information_header("${PROJECT_NAME}" "${${PROJECT_NAME}_current_git_revision}")
 
-    include(utility/out_of_source_build)
-    enforce_out_of_source_build()
+# define compiler/linker flags
+# -------------------------------------
+# get list of common compiler flags which should be used
+include(compiler/common_compiler_flags)
+get_common_cxx_compiler_flags(${PROJECT_NAME}_compiler_flags_to_test)
 
-    include(utility/build_type_handler)
-    handle_default_build_type()
+# check which flags are supported by the compiler
+include(compiler/compiler_flag_check)
+check_supported_cxx_compiler_flags(
+    "${${PROJECT_NAME}_compiler_flags_to_test}"
+    ${PROJECT_NAME}_cxx_compiler_flags
+)
 
-    # define compiler/linker flags
-    # -------------------------------------
-    # get list of common compiler flags which should be used
-    include(compiler/common_compiler_flags)
-    get_common_cxx_compiler_flags(compiler_flags_to_test)
+include(utility/sanitizer_flags)
+get_sanitizer_flags(
+    RESULT
+        ${PROJECT_NAME}_sanitizer_flags
+    ADDRESS
+    UNDEFINED_BEHAVIOR
+)
 
-    # check which flags are supported by the compiler
-    include(compiler/compiler_flag_check)
-    check_supported_cxx_compiler_flags("${compiler_flags_to_test}" cxx_compiler_flags)
+# check if a faster linker is available
+include(utility/available_linker_check)
+check_available_linker(${PROJECT_NAME}_linker_flags)
 
-    # check if a faster linker is available
-    include(utility/available_linker_check)
-    check_available_linker(linker_flags)
+add_subdirectory(src)
 
-    # get sanitizer flags
-    include(utility/sanitizer_flags)
-    get_sanitizer_flags(
-        RESULT
-            sanitizer_flags
-        ADDRESS
-        UNDEFINED_BEHAVIOR
-    )
-
-    # target: ##TEMPLATE_TARGET_NAME##
-    # -------------------------------------
-    ##SECTION_EXECUTABLE_TYPE### create executable target
-    ##SECTION_EXECUTABLE_TYPE##add_executable(${${PROJECT_NAME}_target})
-    ##SECTION_EXECUTABLE_TYPE##add_executable(
-    ##SECTION_EXECUTABLE_TYPE##    ${${PROJECT_NAME}_target}::${${PROJECT_NAME}_target}
-    ##SECTION_EXECUTABLE_TYPE##    ALIAS
-    ##SECTION_EXECUTABLE_TYPE##    ${${PROJECT_NAME}_target}
-    ##SECTION_EXECUTABLE_TYPE##)
-    ##SECTION_LIBRARY_TYPE### create library target
-    ##SECTION_LIBRARY_TYPE##add_library(${${PROJECT_NAME}_target})
-    ##SECTION_LIBRARY_TYPE##add_library(
-    ##SECTION_LIBRARY_TYPE##    ${${PROJECT_NAME}_target}::${${PROJECT_NAME}_target}
-    ##SECTION_LIBRARY_TYPE##    ALIAS
-    ##SECTION_LIBRARY_TYPE##    ${${PROJECT_NAME}_target}
-    ##SECTION_LIBRARY_TYPE##)
-
-    # 'include' subdirectory which adds sources and related options to the target
-    add_subdirectory(src)
-
-    # use helper function to configure a target
-    include(utility/target_configuration)
-    configure_target(
-        TARGET
-            ${${PROJECT_NAME}_target}
-        CXX_STANDARD
-            ##TEMPLATE_CXX_STANDARD##
-        COMPILER_FLAGS
-            "${cxx_compiler_flags}"
-        SANITIZER_FLAGS
-            "${sanitizer_flags}"
-        LINKER_FLAGS
-            "${linker_flags}"
-        PUBLIC_INCLUDE_DIRS
-            ${CMAKE_CURRENT_SOURCE_DIR}/include
-        PRIVATE_INCLUDE_DIRS
-            ${CMAKE_CURRENT_BINARY_DIR}
-        BUILD_TYPE_AS_OUTPUT_DIR
-    )
-
-    # add analyzer to target
-    include(analyzer/clang_tidy)
-    register_for_clang_tidy(${${PROJECT_NAME}_target})
-
-    include(analyzer/cppcheck)
-    register_for_cppcheck(${${PROJECT_NAME}_target})
-
-    # strip binary for specific build types
-    include(utility/postbuild_strip_command)
-    add_postbuild_strip(${${PROJECT_NAME}_target})
-
-    # define installation config for target and use GNU standard locations
-    # NOTE: PREFIX=/usr/local/ by default
-    include(GNUInstallDirs)
-    install(
-        TARGETS
-            ${${PROJECT_NAME}_target}
-        RUNTIME
-            DESTINATION ${CMAKE_INSTALL_BINDIR}
-        LIBRARY
-            DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE
-            DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    )
-
-    # check if cache variable is true
-    if(${PROJECT_NAME}_enable_documentation)
-        add_subdirectory(doc)
-    endif()
-endfunction()
-
-function(configure_dependencies)
-    # project does not have any dependencies
-endfunction()
-
-main()
+# check if the calling project is the root project
+if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
+    add_subdirectory(doc)
+endif()

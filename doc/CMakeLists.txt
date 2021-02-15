@@ -13,8 +13,7 @@ else()
     configure_file(${doxygen_in} ${doxygen_out} @ONLY)
 
     # custom target to build documentation
-    add_custom_target(documentation
-        ALL
+    add_custom_target(${${PROJECT_NAME}_target_documentation}
         COMMAND
             Doxygen::doxygen
             ${doxygen_out}

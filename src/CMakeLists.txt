@@ -1,9 +1,2 @@
-target_sources(${${PROJECT_NAME}_target}
-    PRIVATE
-        # add private source files here
-)
-
-target_include_directories(${${PROJECT_NAME}_target}
-    PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}
-)
+##SECTION_LIBRARY_TYPE##add_subdirectory(${${PROJECT_NAME}_target_lib##TEMPLATE_TARGET_NAME##})
+##SECTION_EXECUTABLE_TYPE##add_subdirectory(${${PROJECT_NAME}_target_##TEMPLATE_TARGET_NAME##})
