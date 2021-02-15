@@ -16,6 +16,14 @@ This repository is a template for C++ projects with CMake as build system.
 - [clang-tidy][] - clang-based C++ 'linter' tool
 - [clang-format][] - clang-based code formatting tool
 
+## TODO
+
+- Add generation/option for test related files and targets
+- Add option to generate backend and frontend targets directly (lib + exe)
+- Allow the initialization without Git (Submodules as final info message)
+- Share duplicated CMake code (e.g. `configure_target`)
+- Let user specify all Git options, e.g. signing (add wait after `git init`)
+
 ## License
 
 The project is licensed under the MIT license. See [LICENSE](LICENSE) for more
