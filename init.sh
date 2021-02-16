@@ -11,8 +11,6 @@ project_name=
 target_name=
 target_type=0 # [0 = executable | 1 = library]
 cxx_standard=17
-git_username=
-git_email=
 full_dir_structure=0
 no_git=0
 
@@ -35,10 +33,6 @@ OPTIONS:
         Create all common top-level directories according to the coding guidelines.
     --no-git
         No Git repository and commits will be created. '.git/' will no be deleted.
-    --git-username <NAME>
-        Name which should be used locally in the Git repository to create commits.
-    --git-email <ADDRESS>
-        Email address which should be used locally in the Git repository to create commits.
 " "$(basename "$0")" 1>&2
 
     exit 1
@@ -71,16 +65,9 @@ create_git_repository_and_commits() {
     # initialize the Git repo and set local config if requested
     git init
 
-    printf "\nIs '%s' the correct template dir which should be configured? [y/n] " "${script_dir}"
-    read -r answer
-
-    if [ -n "${git_username}" ]; then
-        git config user.name "${git_username}"
-    fi
-
-    if [ -n "${git_email}" ]; then
-        git config user.email "${git_email}"
-    fi
+    printf "\nYou can now change the Git config before creating the first commit.\n"
+    printf "Use a separate terminal or split!\nPress any key to continue..."
+    read -r _tmp
 
     # create first commit as empty commit
     git commit --allow-empty -m "Initial empty commit"
@@ -185,24 +172,6 @@ while :; do
             ;;
         --no-git)
             no_git=1
-            ;;
-        --git-username)
-            if [ -n "$2" ]; then
-                git_username=$2
-                shift
-            else
-                eprint_empty_argument "--git-username"
-                usage
-            fi
-            ;;
-        --git-email)
-            if [ -n "$2" ]; then
-                git_email=$2
-                shift
-            else
-                eprint_empty_argument "--git-email"
-                usage
-            fi
             ;;
         -h|--help)
             usage
