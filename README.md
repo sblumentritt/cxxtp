@@ -19,7 +19,7 @@ This repository is a template for C++ projects with CMake as build system.
 ## TODO
 
 - [ ] Add generation/option for test related files and targets
-- [ ] Add option to generate backend and frontend targets directly (lib + exe)
+- [x] Add option to generate backend and frontend targets directly (lib + exe)
 - [x] Allow the initialization without Git (Submodules as final info message)
 - [ ] Share duplicated CMake code (e.g. `configure_target`)
 - [x] Let user specify all Git options, e.g. signing (add wait after `git init`)

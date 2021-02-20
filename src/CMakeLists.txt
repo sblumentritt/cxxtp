@@ -1,2 +1,2 @@
-##SECTION_LIBRARY_TYPE##add_subdirectory(${${PROJECT_NAME}_target_lib##TEMPLATE_TARGET_NAME##})
-##SECTION_EXECUTABLE_TYPE##add_subdirectory(${${PROJECT_NAME}_target_##TEMPLATE_TARGET_NAME##})
+##SECTION_LIBRARY_TYPE##add_subdirectory(${${PROJECT_NAME}_target_##LIBRARY_TARGET_NAME##})
+##SECTION_EXECUTABLE_TYPE##add_subdirectory(${${PROJECT_NAME}_target_##EXECUTABLE_TARGET_NAME##})

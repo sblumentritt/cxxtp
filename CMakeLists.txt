@@ -18,8 +18,8 @@ unset(CMAKE_MODULE_PATH)
 
 # global variables
 # -------------------------------------
-##SECTION_EXECUTABLE_TYPE##set(${PROJECT_NAME}_target_##TEMPLATE_TARGET_NAME## "##TEMPLATE_TARGET_NAME##")
-##SECTION_LIBRARY_TYPE##set(${PROJECT_NAME}_target_lib##TEMPLATE_TARGET_NAME## "lib##TEMPLATE_TARGET_NAME##")
+##SECTION_EXECUTABLE_TYPE##set(${PROJECT_NAME}_target_##EXECUTABLE_TARGET_NAME## "##EXECUTABLE_TARGET_NAME##")
+##SECTION_LIBRARY_TYPE##set(${PROJECT_NAME}_target_##LIBRARY_TARGET_NAME## "##LIBRARY_TARGET_NAME##")
 # generic documentation target
 set(${PROJECT_NAME}_target_documentation "documentation")
 

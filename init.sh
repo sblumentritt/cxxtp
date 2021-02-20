@@ -8,8 +8,8 @@ cmake_modules_tag="v0.2.0"
 
 # define all variables which will be populated from the command line
 project_name=
-target_name=
-target_type=0 # [0 = executable | 1 = library]
+target_name_lib=
+target_name_exe=
 cxx_standard=17
 full_dir_structure=0
 no_git=0
@@ -22,10 +22,10 @@ OPTIONS:
         Prints help information.
     -p, --project <NAME>
         Name which should be used for the CMake project.
-    -t, --target <NAME>
-        Name which should be used for the CMake target.
-    -l, --lib
-        Create a library CMake target. Without this option an executable CMake target is created.
+    -l, --lib <NAME>
+        Create a library CMake target with the given name.
+    -e, --executable <NAME>
+        Create a executable CMake target with the given name.
     -s, --standard <VERSION>
         C++ standard which should be used to build the target. [possible values: 11, 14, 17, 20]
         Default: 17
@@ -46,13 +46,6 @@ eprint_required_option() {
     printf "ERROR: '%s' command line option is required.\n" "$1" >&2
 }
 
-check_required_string_option() {
-    if [ -z "$1" ]; then
-        eprint_required_option "$2"
-        usage
-    fi
-}
-
 # find all CMakeLists.txt and call sed with the given string
 find_and_sed() {
     find "${script_dir}" -type f -name CMakeLists.txt -exec sed -i -E "$1" {} \;
@@ -67,6 +60,7 @@ create_git_repository_and_commits() {
 
     printf "\nYou can now change the Git config before creating the first commit.\n"
     printf "Use a separate terminal or split!\nPress any key to continue..."
+    # shellcheck disable=SC2034 # variable is intentionally unused
     read -r _tmp
 
     # create first commit as empty commit
@@ -101,29 +95,43 @@ create_git_repository_and_commits() {
 }
 
 generate_and_configure_cmake_files() {
-    if [ "${target_type}" -eq 0 ]; then
-        target_specific_dir="${script_dir}/src/${target_name}"
+    local cmake_template_file="${script_dir}/src/CMakeLists.template"
+
+    if [ -n "${target_name_lib}" ]; then
+        target_specific_dir="${script_dir}/src/${target_name_lib}"
 
         mkdir -p "${target_specific_dir}"
-        mv src/CMakeLists.template "${target_specific_dir}/CMakeLists.txt"
-        sed -i -E "s/##TARGET_NAME##/${target_name}/g" "${target_specific_dir}/CMakeLists.txt"
+        cp "${cmake_template_file}" "${target_specific_dir}/CMakeLists.txt"
 
-        find_and_sed "s/##SECTION_EXECUTABLE_TYPE##//g"
-        find_and_sed "/##SECTION_LIBRARY_TYPE##/d"
-    else
-        target_specific_dir="${script_dir}/src/lib${target_name}"
+        find_and_sed "s/##LIBRARY_TARGET_NAME##/${target_name_lib}/g"
+        sed -i -E "s/##SECTION_LIBRARY_TYPE##//g" "${script_dir}/CMakeLists.txt"
+        sed -i -E "s/##SECTION_LIBRARY_TYPE##//g" "${script_dir}/src/CMakeLists.txt"
+        sed -i -E "s/##SECTION_LIBRARY_TYPE##//g" "${target_specific_dir}/CMakeLists.txt"
+        sed -i -E "s/##TARGET_NAME##/${target_name_lib}/g" "${target_specific_dir}/CMakeLists.txt"
+    fi
+
+    if [ -n "${target_name_exe}" ]; then
+        target_specific_dir="${script_dir}/src/${target_name_exe}"
 
         mkdir -p "${target_specific_dir}"
-        mv src/CMakeLists.template "${target_specific_dir}/CMakeLists.txt"
-        sed -i -E "s/##TARGET_NAME##/lib${target_name}/g" "${target_specific_dir}/CMakeLists.txt"
+        cp "${cmake_template_file}" "${target_specific_dir}/CMakeLists.txt"
 
-        find_and_sed "s/##SECTION_LIBRARY_TYPE##//g"
-        find_and_sed "/##SECTION_EXECUTABLE_TYPE##/d"
+        find_and_sed "s/##EXECUTABLE_TARGET_NAME##/${target_name_exe}/g"
+        sed -i -E "s/##SECTION_EXECUTABLE_TYPE##//g" "${script_dir}/CMakeLists.txt"
+        sed -i -E "s/##SECTION_EXECUTABLE_TYPE##//g" "${script_dir}/src/CMakeLists.txt"
+        sed -i -E "s/##SECTION_EXECUTABLE_TYPE##//g" "${target_specific_dir}/CMakeLists.txt"
+        sed -i -E "s/##TARGET_NAME##/${target_name_exe}/g" "${target_specific_dir}/CMakeLists.txt"
     fi
 
     find_and_sed "s/##TEMPLATE_PROJECT_NAME##/${project_name}/g"
-    find_and_sed "s/##TEMPLATE_TARGET_NAME##/${target_name}/g"
     find_and_sed "s/##TEMPLATE_CXX_STANDARD##/${cxx_standard}/g"
+
+    # delete sections when they are still available
+    find_and_sed "/##SECTION_LIBRARY_TYPE##/d"
+    find_and_sed "/##SECTION_EXECUTABLE_TYPE##/d"
+
+    # remove template file which is no longer needed
+    rm "${cmake_template_file}"
 }
 
 # parse command line arguments
@@ -138,17 +146,23 @@ while :; do
                 usage
             fi
             ;;
-        -t|--target)
+        -l|--lib)
             if [ -n "$2" ]; then
-                target_name=$2
+                target_name_lib=$2
                 shift
             else
-                eprint_empty_argument "-t, --target"
+                eprint_empty_argument "-l, --lib"
                 usage
             fi
             ;;
-        -l|--lib)
-            target_type=1
+        -e|--executable)
+            if [ -n "$2" ]; then
+                target_name_exe=$2
+                shift
+            else
+                eprint_empty_argument "-e, --executable"
+                usage
+            fi
             ;;
         -s|--standard)
             if [ -n "$2" ]; then
@@ -187,8 +201,20 @@ while :; do
     shift
 done
 
-check_required_string_option "$project_name" "-p, --project"
-check_required_string_option "$target_name" "-t, --target"
+# check that required options are set
+if [ -z "${project_name}" ]; then
+    eprint_required_option "-p, --project"
+    usage
+fi
+
+if [ -z "${target_name_lib}" ] && [ -z "${target_name_exe}" ]; then
+    printf "ERROR: At least one target type has to be used on the command line.\n" >&2
+    printf "ERROR: Set either '-l, --lib' or '-e, --executable'.\n" >&2
+    usage
+elif [ "${target_name_lib}" = "${target_name_exe}" ]; then
+    printf "ERROR: Library and executable target can not use the same name.\n" >&2
+    usage
+fi
 
 printf "\nIs '%s' the correct template dir which should be configured? [y/n] " "${script_dir}"
 read -r answer
