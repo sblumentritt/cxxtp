@@ -4,7 +4,7 @@
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 
 # dependency commits/tags
-cmake_modules_tag="v0.2.0"
+cmake_modules_tag="v0.3.0"
 catch2_tag="v2.13.4"
 
 # define all variables which will be populated from the command line
@@ -79,7 +79,7 @@ create_git_repository_and_commits() {
     cd "${script_dir}/dependency/cmake_modules" || \
         { printf "Unable to change to '%s'\n" "${script_dir}/dependency/cmake_modules" >&2 ; exit 1; }
 
-    # git checkout "${cmake_modules_tag}"
+    git checkout "${cmake_modules_tag}"
 
     cd "${script_dir}" || { printf "Unable to change to '%s'\n" "${script_dir}" >&2; exit 1; }
 
