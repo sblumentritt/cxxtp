@@ -1,5 +1,5 @@
 ---
-# file for 'clang-format version 10.0.0'
+# file for 'clang-format version 11.0.0'
 #
 # NOTE: Do not reorder the sections as this is the order given from
 #       '--dump-config' option. The only differences to the 'base config'
@@ -15,16 +15,18 @@ AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignConsecutiveMacros: false
 AlignConsecutiveAssignments: false
+AlignConsecutiveBitFields: false
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: Left
-AlignOperands: true
+AlignOperands: Align
 AlignTrailingComments: false
 
 AllowAllArgumentsOnNextLine: false
 AllowAllConstructorInitializersOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 
-AllowShortBlocksOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortLambdasOnASingleLine: Empty
@@ -42,7 +44,7 @@ BinPackParameters: false
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: false
-  AfterControlStatement: false
+  AfterControlStatement: Never
   AfterEnum: false
   AfterFunction: false
   AfterNamespace: false
@@ -51,6 +53,8 @@ BraceWrapping:
   AfterExternBlock: false
   BeforeCatch: false
   BeforeElse: false
+  BeforeLambdaBody: false
+  BeforeWhile: false
   IndentBraces: false
   SplitEmptyFunction: false
   SplitEmptyRecord: false
@@ -94,9 +98,14 @@ IncludeIsMainRegex: '$'
 IncludeIsMainSourceRegex: ''
 
 IndentCaseLabels: false
+IndentCaseBlocks: false
+IndentGotoLabels: false
 IndentPPDirectives: BeforeHash
+IndentExternBlock: AfterExternBlock
+
 IndentWidth: 4
 IndentWrappedFunctionNames: false
+InsertTrailingCommas: None
 
 KeepEmptyLinesAtTheStartOfBlocks: false
 
@@ -133,8 +142,10 @@ SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: true
 SpacesBeforeTrailingComments: 1
 
+SpaceInEmptyBlock: false
 SpaceInEmptyParentheses: false
 SpacesInAngles: false
+SpacesInConditionalStatement: false
 SpacesInContainerLiterals: false
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
@@ -147,4 +158,6 @@ StatementMacros: ['Q_UNUSED', 'QT_REQUIRE_VERSION']
 TabWidth: 4
 UseCRLF: false
 UseTab: Never
+
+WhitespaceSensitiveMacros: ['STRINGIZE', 'PP_STRINGIZE']
 ...
