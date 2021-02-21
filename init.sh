@@ -5,12 +5,14 @@ script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 
 # dependency commits/tags
 cmake_modules_tag="v0.2.0"
+catch2_tag="v2.13.4"
 
 # define all variables which will be populated from the command line
 project_name=
 target_name_lib=
 target_name_exe=
 cxx_standard=17
+enable_testing=0
 full_dir_structure=0
 no_git=0
 
@@ -29,6 +31,8 @@ OPTIONS:
     -s, --standard <VERSION>
         C++ standard which should be used to build the target. [possible values: 11, 14, 17, 20]
         Default: 17
+    -t, --testing
+        Create targets, files and add submodule for testing. Only possible with a library target.
     -f, --full-dir-structure
         Create all common top-level directories according to the coding guidelines.
     --no-git
@@ -70,8 +74,9 @@ create_git_repository_and_commits() {
     git add "${script_dir}/.gitignore"
     git commit -m "Add .gitignore file"
 
-    # add 'cmake_modules' as submodule
     mkdir "${script_dir}/dependency"
+
+    # add 'cmake_modules' as submodule
     git submodule add https://github.com/sblumentritt/cmake_modules.git "dependency/cmake_modules"
 
     cd "${script_dir}/dependency/cmake_modules" || \
@@ -84,12 +89,28 @@ create_git_repository_and_commits() {
     git add "${script_dir}/dependency/cmake_modules"
     git commit -m "Add 'cmake_modules' submodule"
 
+    if [ "${enable_testing}" -eq 1 ]; then
+        # add 'Catch2' as submodule
+        git submodule add https://github.com/catchorg/Catch2.git "dependency/Catch2"
+
+        cd "${script_dir}/dependency/Catch2" || \
+        { printf "Unable to change to '%s'\n" "${script_dir}/dependency/Catch2" >&2 ; exit 1; }
+
+        git checkout "${catch2_tag}"
+
+        cd "${script_dir}" || { printf "Unable to change to '%s'\n" "${script_dir}" >&2; exit 1; }
+
+        git add "${script_dir}/dependency/Catch2"
+        git commit -m "Add 'Catch2' submodule"
+    fi
+
     # commit all relevant files from the template
     git add "${script_dir}/.clang-format"
     git add "${script_dir}/.clang-tidy"
     git add "${script_dir}/CMakeLists.txt"
     git add "${script_dir}/doc/"
     git add "${script_dir}/src/"
+    git add "${script_dir}/test/"
 
     git commit -m "Add initial files which come from the 'cxxtp' project template"
 }
@@ -129,6 +150,14 @@ generate_and_configure_cmake_files() {
     # delete sections when they are still available
     find_and_sed "/##SECTION_LIBRARY_TYPE##/d"
     find_and_sed "/##SECTION_EXECUTABLE_TYPE##/d"
+
+    if [ "${enable_testing}" -eq 1 ]; then
+        mv "${script_dir}/test/library_target_name" "${script_dir}/test/${target_name_lib}"
+        find_and_sed "s/##SECTION_TESTING##//g"
+    else
+        rm -rf "${script_dir}/test"
+        find_and_sed "/##SECTION_TESTING##/d"
+    fi
 
     # remove template file which is no longer needed
     rm "${cmake_template_file}"
@@ -181,6 +210,9 @@ while :; do
                 usage
             fi
             ;;
+        -t|--testing)
+            enable_testing=1
+            ;;
         -f|--full-dir-structure)
             full_dir_structure=1
             ;;
@@ -216,6 +248,12 @@ elif [ "${target_name_lib}" = "${target_name_exe}" ]; then
     usage
 fi
 
+if [ "${enable_testing}" -eq 1 ] && [ -z "${target_name_lib}" ]; then
+    printf "INFO: Testing related configurations will not be created.\n" >&2
+    printf "INFO: Provide the '-l, --lib' flag for the testing configurations.\n" >&2
+    enable_testing=0
+fi
+
 printf "\nIs '%s' the correct template dir which should be configured? [y/n] " "${script_dir}"
 read -r answer
 
@@ -233,6 +271,10 @@ if [ "${no_git}" -eq 0 ]; then
 else
     printf "\nThe template depends on the following Git repositories:\n"
     printf "    - https://github.com/sblumentritt/cmake_modules %s\n" "${cmake_modules_tag}"
+
+    if [ "${enable_testing}" -eq 1 ]; then
+        printf "    - https://github.com/catchorg/Catch2 %s\n" "${catch2_tag}"
+    fi
 fi
 
 # create common top-level directories if requested

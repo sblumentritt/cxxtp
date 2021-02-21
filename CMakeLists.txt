@@ -22,6 +22,9 @@ unset(CMAKE_MODULE_PATH)
 ##SECTION_LIBRARY_TYPE##set(${PROJECT_NAME}_target_##LIBRARY_TARGET_NAME## "##LIBRARY_TARGET_NAME##")
 # generic documentation target
 set(${PROJECT_NAME}_target_documentation "documentation")
+##SECTION_TESTING### generic test targets
+##SECTION_TESTING##set(${PROJECT_NAME}_target_specification_test "specification_test")
+##SECTION_TESTING##set(${PROJECT_NAME}_target_performance_test "performance_test")
 
 # append custom cmake paths to module search
 # -------------------------------------
@@ -79,4 +82,5 @@ add_subdirectory(src)
 # check if the calling project is the root project
 if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
     add_subdirectory(doc)
+    ##SECTION_TESTING##add_subdirectory(test)
 endif()
