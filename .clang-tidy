@@ -1,5 +1,5 @@
 ---
-# file for 'clang-tidy version 10.0.0'
+# file for 'clang-tidy version 11.0.0'
 
 Checks: >
   -*,
@@ -57,6 +57,9 @@ CheckOptions:
     value: '0'
 
   - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+    value: '1'
+
+  - key: readability-qualified-auto.AddConstToQualified
     value: '1'
 
   # NOTE: The following options are for the naming convention and should not be changed.
