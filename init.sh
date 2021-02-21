@@ -13,7 +13,6 @@ target_name_lib=
 target_name_exe=
 cxx_standard=17
 enable_testing=0
-full_dir_structure=0
 no_git=0
 
 usage() {
@@ -33,8 +32,6 @@ OPTIONS:
         Default: 17
     -t, --testing
         Create targets, files and add submodule for testing. Only possible with a library target.
-    -f, --full-dir-structure
-        Create all common top-level directories according to the coding guidelines.
     --no-git
         No Git repository and commits will be created. '.git/' will no be deleted.
 " "$(basename "$0")" 1>&2
@@ -213,9 +210,6 @@ while :; do
         -t|--testing)
             enable_testing=1
             ;;
-        -f|--full-dir-structure)
-            full_dir_structure=1
-            ;;
         --no-git)
             no_git=1
             ;;
@@ -275,16 +269,6 @@ else
     if [ "${enable_testing}" -eq 1 ]; then
         printf "    - https://github.com/catchorg/Catch2 %s\n" "${catch2_tag}"
     fi
-fi
-
-# create common top-level directories if requested
-if [ "${full_dir_structure}" -eq 1 ]; then
-    mkdir "${script_dir}/cmake"
-    mkdir "${script_dir}/include"
-    mkdir "${script_dir}/test"
-    mkdir "${script_dir}/example"
-    mkdir "${script_dir}/script"
-    mkdir "${script_dir}/packaging"
 fi
 
 # remove some irrelevant files from the template
