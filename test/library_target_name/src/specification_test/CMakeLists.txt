@@ -38,6 +38,15 @@ register_for_cppcheck(${${PROJECT_NAME}_target_specification_test})
 include(utility/postbuild_strip_command)
 add_postbuild_strip(${${PROJECT_NAME}_target_target_specification_test})
 
+# register for coverage reports on 'Coverage' build type
+include(generic_target/coverage_report)
+register_for_coverage_report(
+    TARGET
+        ${${PROJECT_NAME}_target_specification_test}
+    ADDITIONAL_OBJECTS
+        $<TARGET_FILE:${${PROJECT_NAME}_target_##LIBRARY_TARGET_NAME##}>
+)
+
 # add source files and include sub-folder
 # -------------------------------------
 target_sources(${${PROJECT_NAME}_target_specification_test}
