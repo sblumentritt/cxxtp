@@ -54,22 +54,8 @@ target_link_libraries(${${PROJECT_NAME}_target_performance_test}
         ${${PROJECT_NAME}_target_##LIBRARY_TARGET_NAME##}::${${PROJECT_NAME}_target_##LIBRARY_TARGET_NAME##}
 )
 
-# unset module path to not pollute third party projects
-unset(CMAKE_MODULE_PATH)
-
-if(NOT TARGET Catch2::Catch2)
-    set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
-    add_subdirectory(
-        ${PROJECT_SOURCE_DIR}/dependency/Catch2
-        ${PROJECT_BINARY_DIR}/dependency/Catch2
-    )
-
-    # configure Catch2 include dir property to silence compiler/analyzer warnings
-    target_include_directories(Catch2
-        SYSTEM INTERFACE
-            ${PROJECT_SOURCE_DIR}/dependency/Catch2/single_include
-    )
-endif()
+include(catch2_target_helper)
+make_catch2_target_available()
 
 target_link_libraries(${${PROJECT_NAME}_target_performance_test}
     PRIVATE

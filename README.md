@@ -18,8 +18,8 @@ This repository is a template for C++ projects with CMake as build system.
 
 ## TODO
 
-- [ ] Move Catch2 target creation to a CMake helper file
 - [x] Add coverage reports to the specification test target
+- [x] Move Catch2 target creation to a CMake helper file
 - [ ] Share duplicated CMake code (e.g. `configure_target`)
 
 ## License

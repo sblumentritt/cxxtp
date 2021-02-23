@@ -108,6 +108,7 @@ create_git_repository_and_commits() {
     git add "${script_dir}/doc/"
     git add "${script_dir}/src/"
     git add "${script_dir}/test/"
+    git add "${script_dir}/cmake/"
 
     git commit -m "Add initial files which come from the 'cxxtp' project template"
 }
