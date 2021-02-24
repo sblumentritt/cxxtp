@@ -5,6 +5,9 @@ This repository is a template for C++ projects with CMake as build system.
 > The project follows the CMake guidelines provided at
 > https://github.com/sblumentritt/coding_guidelines.
 
+> A generated example can be found at
+> https://github.com/sblumentritt/cxxtp_example
+
 ## Requirements
 
 - [CMake][] >= 3.17.0
