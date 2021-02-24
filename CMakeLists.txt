@@ -29,6 +29,7 @@ set(${PROJECT_NAME}_target_documentation "documentation")
 # append custom cmake paths to module search
 # -------------------------------------
 list(APPEND CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_LIST_DIR}/cmake"
     "${CMAKE_CURRENT_LIST_DIR}/dependency/cmake_modules"
 )
 

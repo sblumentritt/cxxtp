@@ -2,7 +2,7 @@
 # -------------------------------------
 add_executable(${${PROJECT_NAME}_target_specification_test} EXCLUDE_FROM_ALL)
 add_executable(
-    test::${${PROJECT_NAME}_target_specification_test}}
+    test::${${PROJECT_NAME}_target_specification_test}
     ALIAS
     ${${PROJECT_NAME}_target_specification_test}
 )
@@ -36,7 +36,7 @@ register_for_cppcheck(${${PROJECT_NAME}_target_specification_test})
 
 # strip binary for specific build types
 include(utility/postbuild_strip_command)
-add_postbuild_strip(${${PROJECT_NAME}_target_target_specification_test})
+add_postbuild_strip(${${PROJECT_NAME}_target_specification_test})
 
 # register for coverage reports on 'Coverage' build type
 include(generic_target/coverage_report)
