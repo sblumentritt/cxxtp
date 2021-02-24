@@ -16,12 +16,6 @@ This repository is a template for C++ projects with CMake as build system.
 - [clang-tidy][] - clang-based C++ 'linter' tool
 - [clang-format][] - clang-based code formatting tool
 
-## TODO
-
-- [x] Add coverage reports to the specification test target
-- [x] Move Catch2 target creation to a CMake helper file
-- [ ] Share duplicated CMake code (e.g. `configure_target`)
-
 ## License
 
 The project is licensed under the MIT license. See [LICENSE](LICENSE) for more
